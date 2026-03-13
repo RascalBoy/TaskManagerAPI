@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from typing import List,Dict,Optional,Annotated
 import uvicorn
-from models.user_models import UserCreate,UserDelete,UserRead
+from models.user_models import MUserCreate,MUserDelete,MUserRead
 
 app = FastAPI()
 
@@ -14,7 +14,7 @@ async def show_user_by_id(user_id:int) -> int:
     return user_id
 
 @app.get("/users")
-async def show_users() ->List[UserRead]:
+async def show_users() ->List[MUserRead]:
     return []
 
 
