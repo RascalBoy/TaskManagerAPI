@@ -20,4 +20,4 @@ async def show_users() ->List[MUserRead]:
 
 
 if __name__ == "__main__":
-    uvicorn.run(app="api.main:app",reload=True)
+    uvicorn.run(app="main:app",reload=True)
