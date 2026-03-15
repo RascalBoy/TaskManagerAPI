@@ -2,8 +2,10 @@ from pydantic import BaseModel,Field
 from typing import Annotated
 
 class MUserCreate(BaseModel):
-    login: Annotated[str, Field(title="Логин пользователя",description="Необходим для регистрации и авторизации в системе", example="test@mail.com")]
-    password: Annotated[str,Field(title="Пароль пользователя",description="Необходим для регистрации и авторизации в системе",example="password123")]
+    login: Annotated[str, Field(title="Логин пользователя",
+    description="Необходим для регистрации и авторизации в системе")]
+    password: Annotated[str,Field(title="Пароль пользователя",
+    description="Необходим для регистрации и авторизации в системе")]
     nickname: Annotated[str,Field(title="Никнейм пользователя",description="Необходим для отображения в системе")]
     name: Annotated[str,Field(title="Имя пользователя",description="Необходим для отображения в системе")]
     second_name: Annotated[str,Field(title="Фамилия пользователя",description="Необходим для отображения в системе")]
