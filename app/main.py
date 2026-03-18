@@ -3,7 +3,10 @@ from typing import List,Dict,Optional,Annotated
 import uvicorn
 from models.user_models import MUserCreate,MUserDelete,MUserRead
 
+
 app = FastAPI()
+
+
 
 @app.get("/")
 async def index():
