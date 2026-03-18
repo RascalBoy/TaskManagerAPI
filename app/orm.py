@@ -7,4 +7,11 @@ def create_tables():
 
 def create_user(user:MUserCreate):
     with session_factory() as session:
-        pass
+        session.add(Users_orm(
+            login=user.login, 
+            password=user.password,
+            nickname=user.nickname,
+            name=user.name,
+            second_name=user.second_name
+            ))
+        session.commit()

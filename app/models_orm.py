@@ -33,7 +33,7 @@ class Tasks_orm(Base):
     description: Mapped[str_200]
     complition_date: Mapped[datetime.datetime]
     complition_state: Mapped[Complition_state]
-    project_id: Mapped[int] = mapped_column(ForeignKey("projects",ondelete="SET NULL"))
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id",ondelete="SET NULL"))
     tag_id:Mapped[int] = mapped_column(ForeignKey("tags.id",ondelete="SET NULL"))
 
 class Comments_orm(Base):
