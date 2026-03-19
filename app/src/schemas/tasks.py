@@ -2,7 +2,7 @@ from typing import Annotated
 
 from pydantic import BaseModel,Field
 
-class MTaskCreate(BaseModel):
+class STaskCreate(BaseModel):
     title: Annotated[str, Field(title="",description="")]
     description: Annotated[str, Field(title="",description="")]
     completion_date: str
@@ -10,8 +10,8 @@ class MTaskCreate(BaseModel):
     project: Annotated[int,Field(title="",description="")]
     tag: Annotated[int,Field(title="",description="")]
 
-class MTaskRead(BaseModel):
+class STaskRead(STaskCreate):
     id:Annotated[int,Field(title="",description="")]
 
-class MTaskDelete(BaseModel):
+class STaskDelete(BaseModel):
     id:Annotated[int,Field(title="",description="")]

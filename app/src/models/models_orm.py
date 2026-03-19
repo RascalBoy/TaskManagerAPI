@@ -1,6 +1,6 @@
 import enum
 
-from database import session_factory, Base,str_20,str_50,str_200,intpk
+from src.database import session_factory, Base,str_20,str_50,str_200,intpk
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import ForeignKey
 import datetime

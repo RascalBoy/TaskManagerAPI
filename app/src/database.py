@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker,Async
 from sqlalchemy.orm import Session,sessionmaker,DeclarativeBase,mapped_column
 from sqlalchemy import URL,create_engine,text,String
 from typing import Annotated
-from config import settings
+from src.config import settings
 
 engine = create_engine(url=settings.DATABASE_URL_psycopq,echo=True)
 
