@@ -1,12 +1,14 @@
 from src.database import session_factory,Base,engine
+from sqlalchemy import select
 from src.models.models_orm import Users_orm 
 from src.schemas.users import SUserCreate 
 
-def create_tables():
-    Base.metadata.create_all(engine)
+async def create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-def create_user(user:SUserCreate):
-    with session_factory() as session:
+async def create_user(user:SUserCreate):
+    async with session_factory() as session:
         session.add(Users_orm(
             login=user.login, 
             password=str(hash(user.password)),
@@ -14,8 +16,17 @@ def create_user(user:SUserCreate):
             name=user.name,
             second_name=user.second_name
             ))
-        session.commit()
+        await session.commit()
 
-def get_users():...
+async def get_user_by_id(user_id:int):
+    async with session_factory() as session:
+        user = await session.get(Users_orm,user_id)
+        return user
+    
+async def get_users():
+    async with session_factory() as session:
+        query = select(Users_orm)
+        result = await session.execute(query)
+        return result.scalars().all()
 
 def get_tasks():...

@@ -1,12 +1,12 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker,AsyncSession
 from sqlalchemy.orm import Session,sessionmaker,DeclarativeBase,mapped_column
-from sqlalchemy import URL,create_engine,text,String
+from sqlalchemy import URL,text,String
 from typing import Annotated
 from src.config import settings
 
-engine = create_engine(url=settings.DATABASE_URL_psycopq,echo=True)
+engine = create_async_engine(url=settings.DATABASE_URL_asyncpg,echo=True)
 
-session_factory = sessionmaker(engine)
+session_factory = async_sessionmaker(engine)
 
 str_20 = Annotated[str,String(20)]
 str_50 = Annotated[str,String(50)]

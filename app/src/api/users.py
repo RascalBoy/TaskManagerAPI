@@ -1,18 +1,22 @@
 from fastapi import APIRouter, Form
-from src.orm import create_user
+from src.orm import create_user, get_user_by_id,get_users
 from src.schemas.users import SUserRead,SUserCreate
 from typing import List,Annotated
+import asyncio
 
 router = APIRouter()
 
-@router.get("/users/{user_id}")
-async def show_user_by_id(user_id:int) -> int:
-    return user_id
 
-@router.get("/users")
-async def show_users() ->List[SUserRead]:
-    return []
+@router.get("/users",response_model=list[SUserRead])
+async def show_users():
+    users = await get_users()
+    return users
 
-@router.post("/users/add")
+@router.get("/users/{user_id}",response_model=SUserRead)
+async def show_user_by_id(user_id:int):
+    user = await get_user_by_id(user_id)
+    return user
+
+@router.post("/users")
 async def add_user(user:SUserCreate):
-    create_user(user)
+    await create_user(user)
