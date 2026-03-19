@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Form
-from src.orm import create_user, get_user_by_id,get_users
+from src.orm.users_orm import create_user, get_user_by_id,get_users
 from src.schemas.users import SUserRead,SUserCreate
-from typing import List,Annotated
-import asyncio
 
 router = APIRouter()
 

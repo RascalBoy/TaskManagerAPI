@@ -1,6 +1,5 @@
 from fastapi import APIRouter
-from src.orm import create_tables
-import asyncio
+from src.orm.setup_orm import create_tables
 router = APIRouter()
 
 @router.get('/setup')

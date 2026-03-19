@@ -1,11 +1,7 @@
 from src.database import session_factory,Base,engine
 from sqlalchemy import select
-from src.models.models_orm import Users_orm 
+from src.models.models_orm import Users_orm
 from src.schemas.users import SUserCreate 
-
-async def create_tables():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
 async def create_user(user:SUserCreate):
     async with session_factory() as session:
@@ -28,5 +24,3 @@ async def get_users():
         query = select(Users_orm)
         result = await session.execute(query)
         return result.scalars().all()
-
-def get_tasks():...
