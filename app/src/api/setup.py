@@ -3,7 +3,7 @@ from src.orm.setup_orm import create_tables
 router = APIRouter()
 
 @router.get('/setup')
-async def setup_database():
+async def setup_database()->dict[str,str]:
     await create_tables()
     return {'data':"Completed"}
 
