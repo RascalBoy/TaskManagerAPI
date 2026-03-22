@@ -15,7 +15,7 @@ class Complition_state(enum.Enum):
 class Users_orm(Base):
     __tablename__ = 'users'
     id:Mapped[intpk] 
-    login: Mapped[str_50]
+    login: Mapped[str_50] = mapped_column(unique=True)
     password: Mapped[str_200]
     nickname: Mapped[str_50]
     name: Mapped[str_50]

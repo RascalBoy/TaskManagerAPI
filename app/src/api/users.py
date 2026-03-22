@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException,Depends
-from src.orm.users_orm import create_user, get_user_by_id,get_users,delete_user
+from src.orm.users_orm import create_user, get_user_by_id,get_users,delete_user,change_user_password
 from src.schemas.users import SUserRead,SUserCreate
 from typing import Optional,Annotated
 from src.schemas.other import PaginationDep
@@ -34,3 +34,11 @@ async def delete(user_id:int):
         except Exception as _ex:
             raise HTTPException(status_code=500, detail=f"Удаление не удалось {_ex}")
     raise HTTPException(status_code=404, detail="Пользователя для удаления не существует")
+
+@router.patch("/users/change_pass")
+async def change_password(user_id:int, new_pass:str):
+    res = await change_user_password(user_id,new_pass)
+    if not res:
+        raise HTTPException(status_code=404, detail="Такого пользователя не существует")
+    
+    return {'data':res}
