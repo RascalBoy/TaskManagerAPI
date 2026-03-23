@@ -7,11 +7,5 @@ class STaskCreate(BaseModel):
     description: Annotated[str, Field(title="",description="")]
     completion_date: str
     completion_state: Annotated[int,Field(title="",description="")]
-    project: Annotated[int,Field(title="",description="")]
-    tag: Annotated[int,Field(title="",description="")]
-
-class STaskRead(STaskCreate):
-    id:Annotated[int,Field(title="",description="")]
-
-class STaskDelete(BaseModel):
-    id:Annotated[int,Field(title="",description="")]
+    project_id: Annotated[int,Field(title="",description="")]
+    tag_id: Annotated[int,Field(title="",description="")]

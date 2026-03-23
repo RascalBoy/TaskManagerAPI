@@ -27,6 +27,12 @@ class Projects_orm(Base):
     title:Mapped[str_50]
     owner_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
 
+class User_Projects_orm(Base):
+    __tablename__ = 'users_projects'
+    id:Mapped[intpk]
+    user_id:Mapped[int] = mapped_column(ForeignKey("users.id",ondelete="CASCADE"))
+    project_id:Mapped[int] = mapped_column(ForeignKey("projects.id",ondelete="CASCADE"))
+
 class Tasks_orm(Base):
     __tablename__ = 'tasks'
     id:Mapped[intpk] 

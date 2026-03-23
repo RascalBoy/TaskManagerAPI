@@ -4,7 +4,7 @@ from src.schemas.users import SUserRead
 
 router = APIRouter()
 
-@router.patch("/auth", response_model=dict[str,SUserRead])
+@router.patch("/v1/auth", response_model=dict[str,SUserRead])
 async def login(login:str, password:str):
     res = await auth_user(login,password)
     if not res:
