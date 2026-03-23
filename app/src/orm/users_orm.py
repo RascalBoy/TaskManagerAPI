@@ -44,7 +44,7 @@ async def change_user_password(user_id:int, password:str)->str|None:
         
         user.password = str(hasher.to_md5(password))
         await session.commit()
-        return "Password changed"
+        return "Пароль изменен"
     
 async def auth_user(login:str, user_password:str):
     async with session_factory() as session:

@@ -38,10 +38,9 @@ class Tasks_orm(Base):
     id:Mapped[intpk] 
     title: Mapped[str_50]
     description: Mapped[str_200]
-    complition_date: Mapped[datetime.datetime]
-    complition_state: Mapped[Complition_state]
+    completion_date: Mapped[datetime.datetime]
+    completion_state: Mapped[Complition_state]
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id",ondelete="CASCADE"))
-    tag_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("tags.id",ondelete="SET NULL"))
 
 class Comments_orm(Base):
     __tablename__ = 'сomments'
