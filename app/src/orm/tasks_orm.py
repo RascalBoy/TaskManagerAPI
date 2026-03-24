@@ -1,9 +1,10 @@
 from src.database import session_factory
 from src.models.models_orm import Tasks_orm, Projects_orm, Complition_state
-from src.dto.tasks import TaskCreateDTO 
+from src.dto.tasks import TaskCreateDTO,TaskRelDTO
 from src.dto.other import PaginationDep
 
 from sqlalchemy import and_, select,delete
+from sqlalchemy.orm import selectinload
 
 async def get_tasks(pagination:PaginationDep):
     async with session_factory() as session:
@@ -11,9 +12,12 @@ async def get_tasks(pagination:PaginationDep):
             select(Tasks_orm)
             .limit(pagination.limit)
             .offset((pagination.page+1 * pagination.limit) - pagination.limit)
+            .options(selectinload(Tasks_orm.comments))
         )
         res = await session.execute(query)
-        return res.scalars().all()
+        res_orm = res.scalars().all()
+        result = [TaskRelDTO.model_validate(row,from_attributes=True) for row in res_orm]
+        return result
     
 async def create_task(task:TaskCreateDTO):
     async with session_factory() as session:

@@ -1,6 +1,6 @@
 from src.database import session_factory
 from src.models.models_orm import Comments_orm,Projects_orm,User_Projects_orm
-from src.dto.comment import CommentsCreateDTO, CommentsEditDTO
+from src.dto.comments import CommentsCreateDTO, CommentsEditDTO
 
 from sqlalchemy import alias, and_, select
 from sqlalchemy.orm import selectinload
@@ -18,7 +18,7 @@ async def create_comment(comment:CommentsCreateDTO):
         query = (
             select(User_Projects_orm)
             .select_from(User_Projects_orm)
-            .where(and_(User_Projects_orm.project_id == comment.project_id, User_Projects_orm.user_id == comment.user_id))
+            .where(User_Projects_orm.user_id == comment.user_id)
         )
 
         res = await session.execute(query)
@@ -30,7 +30,7 @@ async def create_comment(comment:CommentsCreateDTO):
                     title=comment.title,
                     description=comment.description,
                     user_id=comment.user_id,
-                    project_id=comment.project_id
+                    task_id=comment.task_id
             )
             
             session.add(new_task)

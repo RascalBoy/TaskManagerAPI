@@ -1,6 +1,6 @@
 from src.dto.projects import ProjectCreateDTO, ProjectRelDTO
 from src.database import session_factory
-from src.models.models_orm import Projects_orm, User_Projects_orm, Users_orm
+from src.models.models_orm import Projects_orm, User_Projects_orm, Users_orm,Tasks_orm
 from src.dto.other import PaginationDep
 
 from sqlalchemy import delete, select, and_
@@ -17,7 +17,7 @@ async def get_projects(pagination:PaginationDep):
             .limit(pagination.limit)
             .offset((pagination.page + 1) * pagination.limit
                     - pagination.limit)
-            .options(selectinload(Projects_orm.comments),selectinload(Projects_orm.tasks))
+            .options(selectinload(Projects_orm.tasks).selectinload(Tasks_orm.comments))
             
         )
         res = await session.execute(query)

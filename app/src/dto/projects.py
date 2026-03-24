@@ -1,7 +1,7 @@
 from pydantic import BaseModel,Field,ConfigDict
 from typing import Annotated
-from src.dto.tasks import TasksDTO
-from src.dto.comment import CommentsDTO
+from src.dto.tasks import TaskRelDTO
+from src.dto.comments import CommentsDTO
  
 class ProjectCreateDTO(BaseModel):
     title:Annotated[str,Field(title="Project Title")]
@@ -14,5 +14,4 @@ class ProjectDTO(ProjectCreateDTO):
 
 class ProjectRelDTO(ProjectDTO):
     model_config = ConfigDict(from_attributes=True)
-    comments:list["CommentsDTO"] = []
-    tasks: list["TasksDTO"] = []
+    tasks: list["TaskRelDTO"] = []

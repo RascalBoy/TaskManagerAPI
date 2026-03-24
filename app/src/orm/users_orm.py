@@ -1,6 +1,5 @@
-from src.models.models_orm import Users_orm
 from src.dto.users import UserCreateDTO, UserRelDTO
-from src.models.models_orm import Projects_orm
+from src.models.models_orm import Users_orm, Projects_orm,Tasks_orm
 from src.dto.other import PaginationDep
 from src.modules.hash_tools import hasher
 from src.database import session_factory
@@ -24,11 +23,11 @@ async def get_user_by_id(user_id:int):
         query = (
             select(Users_orm)
             .filter_by(id = user_id)
-            .options(selectinload(Users_orm.projects).selectinload(Projects_orm.tasks))
+            .options(selectinload(Users_orm.projects).selectinload(Projects_orm.tasks).selectinload(Tasks_orm.comments))
         )
         res = await session.execute(query)
-        result_orm = res.scalars().one()
-        result = UserRelDTO.model_validate(result_orm, from_attributes=True)
+        row = res.scalars().one()
+        result = UserRelDTO.model_validate(row, from_attributes=True)
         return result
     
 async def get_users(pagination:PaginationDep):
@@ -37,8 +36,8 @@ async def get_users(pagination:PaginationDep):
             select(Users_orm)
             .limit(limit=pagination.limit)
             .offset(offset=((pagination.page+1)*pagination.limit - pagination.limit))
-            .options(selectinload(Users_orm.projects).selectinload(Projects_orm.comments),
-                     selectinload(Users_orm.projects).selectinload(Projects_orm.tasks))
+            .options(selectinload(Users_orm.projects).selectinload(Projects_orm.tasks)
+                     .selectinload(Tasks_orm.comments))
         )
         res = await session.execute(query)
         res_orm = res.scalars().all()

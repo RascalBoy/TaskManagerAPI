@@ -1,9 +1,12 @@
 from src.dto.users import UserCreateDTO
 from src.dto.projects import ProjectCreateDTO
 from src.dto.tasks import TaskCreateDTO
+from src.dto.comments import CommentsCreateDTO
 from src.orm.users_orm import create_user
 from src.orm.projects_orm import create_project
 from src.orm.tasks_orm import create_task
+from src.orm.comments_orm import create_comment
+from src.database import session_factory 
 
 users = [{"login":"Test1",
           "password":"12345",
@@ -28,15 +31,15 @@ users = [{"login":"Test1",
 
 projects = [
     {
-        "title":"Тестовый проект 1",
+        "title":"Кулинария для чайников",
         "owner_id": 1
     },
     {
-        "title":"Лучший проект",
+        "title":"Разработка платформера",
         "owner_id":3
     },
     {
-        "title":"Культовый мультПроект",
+        "title":"Рисуем мультики",
         "owner_id":2
     },
     {
@@ -56,13 +59,51 @@ tasks=[
         "title": "Задача сделать нормальный API",
         "description": "Очень хочется",
         "completion_state": "На выполнении",
-        "project_id": 2,
+        "project_id": 4,
     },
     {
-        "title": "Тестовые данные",
-        "description": "Создать тестовые данные для реализации тестов",
-        "completion_state": "Выполнена",
+        "title": "Сделать раскадровку для первой сцены",
+        "description": "Нарисовать раскадровку к первой сцене мультфильма",
+        "completion_state": "На выполнении",
         "project_id": 3,
+    },
+]
+comments=[
+    {
+        "title":"Главное не забыть перец",
+        "description":"Для вкусных пельменей нужно преобрести и использовать перец",
+        "user_id":1,
+        "task_id":1
+    },
+    {
+        "title":"Нужно переделать бд",
+        "description":"Вроде все неплохо но как проектировщик бд я все еще слабоват",
+        "user_id":2,
+        "task_id":3
+    },
+    {
+        "title":"Главное не забыть перец",
+        "description":"Для вкусных пельменей нужно преобрести и использовать перец",
+        "user_id":1,
+        "task_id":1
+    },
+    {
+        "title":"Нужно переделать бд",
+        "description":"Вроде все неплохо но как проектировщик бд я все еще слабоват",
+        "user_id":2,
+        "task_id":3
+    },
+    {
+        "title":"Главное не забыть перец",
+        "description":"Для вкусных пельменей нужно преобрести и использовать перец",
+        "user_id":1,
+        "task_id":1
+    },
+    {
+        "title":"Нужно переделать бд",
+        "description":"Вроде все неплохо но как проектировщик бд я все еще слабоват",
+        "user_id":2,
+        "task_id":3
     },
 ]
 
@@ -70,6 +111,7 @@ async def insert_test_data():
     _users = [UserCreateDTO(**u) for u in users]
     _projects = [ProjectCreateDTO(**p) for p in projects]
     _tasks = [TaskCreateDTO(**t) for t in tasks]
+    _comments = [CommentsCreateDTO(**c) for c in comments]
     for u in _users:
         await create_user(u)
     
@@ -78,3 +120,6 @@ async def insert_test_data():
 
     for t in _tasks:
         await create_task(t)
+
+    for c in _comments:
+        await create_comment(c)

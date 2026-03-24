@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from src.orm.comments_orm import get_comments, create_comment, edit_comment, delete_comment
-from src.dto.comment import CommentsCreateDTO, CommentsEditDTO
+from src.dto.comments import CommentsCreateDTO, CommentsEditDTO
 
 from fastapi import APIRouter, Depends, HTTPException
 

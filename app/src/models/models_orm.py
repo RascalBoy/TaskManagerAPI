@@ -21,7 +21,7 @@ class Users_orm(Base):
     name: Mapped[str_50]
     second_name: Mapped[str_50]
 
-    projects:Mapped[list["Projects_orm"]] = relationship()
+    projects:Mapped[list["Projects_orm"]] = relationship(back_populates="owner")
 
 class Projects_orm(Base):
     __tablename__ = 'projects'
@@ -29,8 +29,8 @@ class Projects_orm(Base):
     title:Mapped[str_50]
     owner_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
 
-    comments:Mapped[list["Comments_orm"]] = relationship()
-    tasks:Mapped[list["Tasks_orm"]] = relationship()
+    owner: Mapped["Users_orm"] = relationship(back_populates="projects")
+    tasks:Mapped[list["Tasks_orm"]] = relationship(back_populates="project")
 
 class User_Projects_orm(Base):
     __tablename__ = 'users_projects'
@@ -51,7 +51,8 @@ class Tasks_orm(Base):
         onupdate=datetime.datetime.utcnow()
         )
     
-    tags:Mapped[list["Tags_orm"]] = relationship()
+    project:Mapped["Projects_orm"] = relationship(back_populates="tasks")
+    comments:Mapped[list["Comments_orm"]] = relationship(back_populates="task")
 
 class Comments_orm(Base):
     __tablename__ = 'сomments'
@@ -59,11 +60,6 @@ class Comments_orm(Base):
     title:Mapped[str_20]
     description:Mapped[str_200]
     user_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
-    project_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("projects.id",ondelete="SET NULL"))
+    task_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("tasks.id",ondelete="SET NULL"))
 
-class Tags_orm(Base):
-    __tablename__ = 'tags'
-    id:Mapped[intpk]
-    title:Mapped[str_20]
-    creator_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
-    task_id:Mapped[int] = mapped_column(ForeignKey("tasks.id", ondelete="SET NULL"))
+    task:Mapped["Tasks_orm"] = relationship(back_populates="comments")
