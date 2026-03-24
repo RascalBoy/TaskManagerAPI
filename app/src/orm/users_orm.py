@@ -37,8 +37,8 @@ async def get_users(pagination:PaginationDep):
             select(Users_orm)
             .limit(limit=pagination.limit)
             .offset(offset=((pagination.page+1)*pagination.limit - pagination.limit))
-            .options(selectinload(Users_orm.projects)
-                     .selectinload(Projects_orm.tasks))
+            .options(selectinload(Users_orm.projects).selectinload(Projects_orm.comments),
+                     selectinload(Users_orm.projects).selectinload(Projects_orm.tasks))
         )
         res = await session.execute(query)
         res_orm = res.scalars().all()

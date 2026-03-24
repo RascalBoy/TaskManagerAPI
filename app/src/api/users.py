@@ -36,7 +36,7 @@ async def delete(id:int):
     else:
         raise HTTPException(status_code=404, detail="Пользователя для удаления не существует")
 
-@router.patch("/v1/users/change_pass")
+@router.patch("/v1/users")
 async def change_password(user_id:int, new_pass:str):
     res = await change_user_password(user_id,new_pass)
     if not res:

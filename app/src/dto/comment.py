@@ -7,5 +7,9 @@ class CommentsCreateDTO(BaseModel):
     user_id:int
     project_id:int
 
+class CommentsEditDTO(BaseModel):
+    title:str
+    description:str
+
 class CommentsDTO(CommentsCreateDTO):
     id:int

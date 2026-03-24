@@ -29,6 +29,7 @@ class Projects_orm(Base):
     title:Mapped[str_50]
     owner_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
 
+    comments:Mapped[list["Comments_orm"]] = relationship()
     tasks:Mapped[list["Tasks_orm"]] = relationship()
 
 class User_Projects_orm(Base):

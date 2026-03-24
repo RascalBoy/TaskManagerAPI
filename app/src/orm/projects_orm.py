@@ -17,7 +17,7 @@ async def get_projects(pagination:PaginationDep):
             .limit(pagination.limit)
             .offset((pagination.page + 1) * pagination.limit
                     - pagination.limit)
-            .options(selectinload(Projects_orm.tasks))
+            .options(selectinload(Projects_orm.comments),selectinload(Projects_orm.tasks))
             
         )
         res = await session.execute(query)
