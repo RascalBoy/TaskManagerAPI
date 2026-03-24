@@ -3,6 +3,7 @@ from pydantic import BaseModel,Field,ConfigDict
 from datetime import datetime
 
 from src.models.models_orm import Complition_state
+from src.dto.tags import TagDTO
 
 class TaskCreateDTO(BaseModel):
     title: Annotated[str, Field(title="",description="")]
@@ -12,6 +13,10 @@ class TaskCreateDTO(BaseModel):
 
     model_config=ConfigDict(from_attributes=True)
 
-class TaskDTO(TaskCreateDTO):
-    model_config = ConfigDict(from_attributes=True)
+class TasksDTO(TaskCreateDTO):
     id:Annotated[int,Field(title="Номер задачи")]
+    created_at:datetime
+    updated_at:datetime
+
+class TaskRelDTO(TasksDTO):
+    tags:Annotated[list["TagDTO"],Field()] = []

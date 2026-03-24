@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends,HTTPException
 from src.orm.tasks_orm import delete_task, get_tasks, create_task, change_task_status
 from src.dto.other import PaginationDep
-from src.dto.tasks import TaskCreateDTO
+from src.dto.tasks import TaskCreateDTO,TasksDTO
 from src.models.models_orm import Complition_state
 from typing import Annotated
 
@@ -9,7 +9,7 @@ router = APIRouter()
 
 TaskCreateDTODep = Annotated[TaskCreateDTO,Depends(TaskCreateDTO)]
 
-@router.get("/v1/tasks", response_model=dict[str,list[TaskCreateDTO]])
+@router.get("/v1/tasks", response_model=dict[str,list[TasksDTO]])
 async def show(pagination:PaginationDep):
     result = await get_tasks(pagination)
     return {"data":result}

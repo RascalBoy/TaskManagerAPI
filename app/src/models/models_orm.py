@@ -44,10 +44,13 @@ class Tasks_orm(Base):
     description: Mapped[str_200]
     completion_state: Mapped[Complition_state]
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id",ondelete="CASCADE"))
-    created_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc',now())"))]
-    updated_at = Annotated[datetime.datetime, 
-                       mapped_column(server_default=text("TIMEZONE('utc',now())"),
-                                    onupdate=datetime.datetime.now(datetime.timezone.utc))]
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=text("TIMEZONE('utc',now())"))
+    updated_at : Mapped[datetime.datetime] = mapped_column(
+        server_default=text("TIMEZONE('utc',now())"),
+        onupdate=datetime.datetime.utcnow()
+        )
+    
+    tags:Mapped[list["Tags_orm"]] = relationship()
 
 class Comments_orm(Base):
     __tablename__ = 'сomments'
@@ -61,3 +64,5 @@ class Tags_orm(Base):
     __tablename__ = 'tags'
     id:Mapped[intpk]
     title:Mapped[str_20]
+    creator_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
+    task_id:Mapped[int] = mapped_column(ForeignKey("tasks.id", ondelete="SET NULL"))

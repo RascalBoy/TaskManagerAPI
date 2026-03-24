@@ -1,5 +1,5 @@
 from src.database import session_factory
-from src.models.models_orm import Users_orm, Tasks_orm, Projects_orm, Complition_state
+from src.models.models_orm import Tasks_orm, Projects_orm, Complition_state
 from src.dto.tasks import TaskCreateDTO 
 from src.dto.other import PaginationDep
 
@@ -26,15 +26,15 @@ async def create_task(task:TaskCreateDTO):
             )
             session.add(new_task)
             await session.commit()
-            return "Задача создана"
+            return "Новая задача создана"
         except Exception as _ex:
-            return "Что то пошло не так"
+            return f"Ошибка: {_ex}"
     
 async def change_task_status(task_id:int,new_state:Complition_state):
     async with session_factory() as session:
         task = await session.get(Tasks_orm,task_id)
         if not task:
-            return "Такой задачи нет"
+            return "Такой задачи не существует"
         
         task.completion_state = new_state
         await session.commit()
@@ -46,9 +46,10 @@ async def delete_task(task_id:int, user_id:int):
         if task is None:
             return "Задачи не существует"
         project = await session.get(Projects_orm,task.project_id)
-        if project.owner_id == user_id:
+        if project.owner_id == user_id: # type: ignore
             await session.delete(task)
             await session.commit()
             return "Задача успешно удалена"
         else:
             return "Ошибка доступа"
+
