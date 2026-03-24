@@ -1,9 +1,9 @@
-import enum
-
 from src.database import session_factory, Base,str_20,str_50,str_200,intpk
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import ForeignKey
-from typing import Optional
+
+import enum
+from sqlalchemy.orm import Mapped, mapped_column,relationship
+from sqlalchemy import ForeignKey,text
+from typing import Optional,Annotated
 import datetime
 
 class Complition_state(enum.Enum):
@@ -21,11 +21,15 @@ class Users_orm(Base):
     name: Mapped[str_50]
     second_name: Mapped[str_50]
 
+    projects:Mapped[list["Projects_orm"]] = relationship()
+
 class Projects_orm(Base):
     __tablename__ = 'projects'
     id:Mapped[intpk]
     title:Mapped[str_50]
     owner_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
+
+    tasks:Mapped[list["Tasks_orm"]] = relationship()
 
 class User_Projects_orm(Base):
     __tablename__ = 'users_projects'
@@ -38,9 +42,12 @@ class Tasks_orm(Base):
     id:Mapped[intpk] 
     title: Mapped[str_50]
     description: Mapped[str_200]
-    completion_date: Mapped[datetime.datetime]
     completion_state: Mapped[Complition_state]
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id",ondelete="CASCADE"))
+    created_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc',now())"))]
+    updated_at = Annotated[datetime.datetime, 
+                       mapped_column(server_default=text("TIMEZONE('utc',now())"),
+                                    onupdate=datetime.datetime.now(datetime.timezone.utc))]
 
 class Comments_orm(Base):
     __tablename__ = 'сomments'

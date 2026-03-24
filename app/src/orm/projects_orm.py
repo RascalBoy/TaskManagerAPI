@@ -1,8 +1,10 @@
-from src.schemas.projects import SProjectCreate
+from src.dto.projects import ProjectCreateDTO, ProjectRelDTO
 from src.database import session_factory
-from sqlalchemy import delete, select, and_
 from src.models.models_orm import Projects_orm, User_Projects_orm, Users_orm
-from src.schemas.other import PaginationDep
+from src.dto.other import PaginationDep
+
+from sqlalchemy import delete, select, and_
+from sqlalchemy.orm import selectinload
 
 """Получение списка проектов
 Выдает список существующих проектов из бд
@@ -15,9 +17,13 @@ async def get_projects(pagination:PaginationDep):
             .limit(pagination.limit)
             .offset((pagination.page + 1) * pagination.limit
                     - pagination.limit)
+            .options(selectinload(Projects_orm.tasks))
+            
         )
-        result = await session.execute(query)
-        return result.scalars().all()
+        res = await session.execute(query)
+        res_orm = res.scalars().all()
+        result = [ProjectRelDTO.model_validate(row,from_attributes=True) for row in res_orm]
+        return result
     
 
 """Создание проекта
@@ -26,7 +32,7 @@ async def get_projects(pagination:PaginationDep):
 Добавляет новый проект в бд
 Добавляет запись об участнике проекта
 """
-async def create_project(project:SProjectCreate):
+async def create_project(project:ProjectCreateDTO):
     async with session_factory() as session:
 
         user = await session.get(Users_orm,project.owner_id)

@@ -1,7 +1,9 @@
-from src.schemas.users import SUserCreate
-from src.schemas.projects import SProjectCreate
+from src.dto.users import UserCreateDTO
+from src.dto.projects import ProjectCreateDTO
+from src.dto.tasks import TaskCreateDTO
 from src.orm.users_orm import create_user
 from src.orm.projects_orm import create_project
+from src.orm.tasks_orm import create_task
 
 users = [{"login":"Test1",
           "password":"12345",
@@ -43,13 +45,36 @@ projects = [
     },
 ]
 
+tasks=[
+    {
+        "title": "Сварить пельмени",
+        "description": "Необходисо сварить пельмени",
+        "completion_state": "Создана",
+        "project_id": 1,
+    },
+    {
+        "title": "Задача сделать нормальный API",
+        "description": "Очень хочется",
+        "completion_state": "На выполнении",
+        "project_id": 2,
+    },
+    {
+        "title": "Тестовые данные",
+        "description": "Создать тестовые данные для реализации тестов",
+        "completion_state": "Выполнена",
+        "project_id": 3,
+    },
+]
+
 async def insert_test_data():
-    _users = [SUserCreate(**u) for u in users]
-    print(_users)
-    _projects = [SProjectCreate(**p) for p in projects]
-    print(_projects)
+    _users = [UserCreateDTO(**u) for u in users]
+    _projects = [ProjectCreateDTO(**p) for p in projects]
+    _tasks = [TaskCreateDTO(**t) for t in tasks]
     for u in _users:
         await create_user(u)
     
     for p in _projects:
         await create_project(p)
+
+    for t in _tasks:
+        await create_task(t)

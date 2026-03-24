@@ -1,14 +1,15 @@
-from fastapi import APIRouter,HTTPException,Depends
-from src.schemas.projects import SProjectCreate
+from src.dto.projects import ProjectCreateDTO,ProjectRelDTO
+from src.dto.other import PaginationDep
 from src.orm.projects_orm import get_projects, create_project, add_user,remove_user,drop_project
+
 from typing import Annotated
-from src.schemas.other import PaginationDep
+from fastapi import APIRouter,HTTPException,Depends
 
 router = APIRouter()
 
-SProjectCreateDep = Annotated[SProjectCreate,Depends(SProjectCreate)]
+SProjectCreateDep = Annotated[ProjectCreateDTO,Depends(ProjectCreateDTO)]
 
-@router.get("/v1/projects", response_model=list[SProjectCreate])
+@router.get("/v1/projects")
 async def show(pagination:PaginationDep):
     result = await get_projects(pagination)
 
@@ -18,7 +19,7 @@ async def show(pagination:PaginationDep):
     return result
 
 @router.post("/v1/projects")
-async def add(project:SProjectCreate):
+async def add(project:ProjectCreateDTO):
     try:
         res = await create_project(project=project)
         return {"state":"success",

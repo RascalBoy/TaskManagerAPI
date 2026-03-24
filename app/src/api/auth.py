@@ -1,10 +1,10 @@
 from fastapi import APIRouter,HTTPException
 from src.orm.users_orm import auth_user
-from src.schemas.users import SUserRead
+from src.dto.users import UserReadDTO
 
 router = APIRouter()
 
-@router.patch("/v1/auth", response_model=dict[str,SUserRead])
+@router.patch("/v1/auth", response_model=dict[str,UserReadDTO])
 async def login(login:str, password:str):
     res = await auth_user(login,password)
     if not res:
