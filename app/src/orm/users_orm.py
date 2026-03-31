@@ -1,7 +1,7 @@
 from src.dto.users import UserCreateDTO, UserRelDTO
 from src.models.models_orm import Users_orm, Projects_orm,Tasks_orm
 from src.dto.other import PaginationDep
-from src.modules.hash_tools import hasher
+from src.modules.hash_tools import get_hash,verify_hash
 from src.database import session_factory
 
 from sqlalchemy.orm import selectinload
@@ -11,7 +11,7 @@ async def create_user(user:UserCreateDTO):
     async with session_factory() as session:
         session.add(Users_orm(
             login=user.login,
-            password=str(hasher.to_md5(user.password)),
+            password=str(get_hash(user.password)),
             nickname=user.nickname,
             name=user.name,
             second_name=user.second_name
@@ -57,7 +57,7 @@ async def change_user_password(user_id:int, password:str)->str|None:
         if not user:
             return "Пользователя с таким id не существует"
         
-        user.password = str(hasher.to_md5(password))
+        user.password = str(get_hash(user.password))
         await session.commit()
         return "Пароль изменен"
     
@@ -65,7 +65,7 @@ async def auth_user(login:str, user_password:str):
     async with session_factory() as session:
        query = (
            select(Users_orm)
-           .filter_by(login=login, password=str(hasher.to_md5(user_password)))
+           .filter_by(login=login)
        )
        res = await session.execute(query)
        return res.scalars().one_or_none()
