@@ -4,7 +4,7 @@ from src.dto.users import UserReadDTO
 from src.modules.hash_tools import verify_hash
 from src.jwt.token_creator import create_access_token
 
-router = APIRouter(tags=["Auth"])
+router = APIRouter(tags=["Аутентификация"])
 
 @router.patch("/v1/auth")
 async def login(response:Response,login:str, password:str):

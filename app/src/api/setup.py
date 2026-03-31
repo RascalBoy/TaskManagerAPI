@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from src.orm.setup_orm import create_tables,delete_tables
 from src.tests.test_data import insert_test_data
 
-router = APIRouter()
+router = APIRouter(tags=["Настройка БД"])
 
 @router.get('/v1/setup')
 async def setup_database()->dict[str,str]:

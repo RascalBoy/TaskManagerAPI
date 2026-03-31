@@ -5,7 +5,7 @@ from src.orm.projects_orm import get_projects, create_project, add_user,remove_u
 from typing import Annotated
 from fastapi import APIRouter,HTTPException,Depends
 
-router = APIRouter()
+router = APIRouter(tags=["Проекты"])
 
 SProjectCreateDep = Annotated[ProjectCreateDTO,Depends(ProjectCreateDTO)]
 

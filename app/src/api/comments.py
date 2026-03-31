@@ -5,7 +5,7 @@ from src.dto.comments import CommentsCreateDTO, CommentsEditDTO
 
 from fastapi import APIRouter, Depends, HTTPException
 
-router = APIRouter()
+router = APIRouter(tags=["Комментарии"])
 
 CommentsCreateDTODep = Annotated[CommentsCreateDTO,Depends(CommentsCreateDTO)]
 

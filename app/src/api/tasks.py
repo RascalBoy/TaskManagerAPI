@@ -5,7 +5,7 @@ from src.dto.tasks import TaskCreateDTO,TasksDTO
 from src.models.models_orm import Complition_state
 from typing import Annotated
 
-router = APIRouter()
+router = APIRouter(tags=["Задачи"])
 
 TaskCreateDTODep = Annotated[TaskCreateDTO,Depends(TaskCreateDTO)]
 
