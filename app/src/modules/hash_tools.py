@@ -1,10 +1,7 @@
-import hashlib
+from passlib.hash import pbkdf2_sha256
 
-class Hasher():
-    @staticmethod
-    def to_md5(text:str):
-        bytes = text.encode("utf-8")
-        hash = hashlib.md5(bytes).hexdigest()
-        return hash
+def get_hash(password:str)->str:
+    return pbkdf2_sha256.hash(password)
 
-hasher = Hasher()
+def verify_hash(plain_password:str, hash_password:str):
+    return pbkdf2_sha256.verify(plain_password,hash_password)
