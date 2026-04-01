@@ -2,7 +2,7 @@ from src.dto.users import UserCreateDTO
 from src.dto.projects import ProjectCreateDTO
 from src.dto.tasks import TaskCreateDTO
 from src.dto.comments import CommentsCreateDTO
-from src.orm.users_orm import create_user
+from src.dao.users import Users
 from src.orm.projects_orm import create_project
 from src.orm.tasks_orm import create_task
 from src.orm.comments_orm import create_comment
@@ -113,7 +113,7 @@ async def insert_test_data():
     _tasks = [TaskCreateDTO(**t) for t in tasks]
     _comments = [CommentsCreateDTO(**c) for c in comments]
     for u in _users:
-        await create_user(u)
+        await Users.create(u)
     
     for p in _projects:
         await create_project(p)

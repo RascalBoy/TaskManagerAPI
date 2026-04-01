@@ -7,17 +7,6 @@ from src.database import session_factory
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select,delete
 
-async def create_user(user:UserCreateDTO):
-    async with session_factory() as session:
-        session.add(Users_orm(
-            login=user.login,
-            password=str(get_hash(user.password)),
-            nickname=user.nickname,
-            name=user.name,
-            second_name=user.second_name
-            ))
-        await session.commit()
-
 async def get_user_by_id(user_id:int):
     async with session_factory() as session:
         query = (

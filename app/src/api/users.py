@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException,Depends
-from src.orm.users_orm import create_user, get_user_by_id,change_user_password
+from src.models.models_orm import Projects_orm, Tasks_orm, Users_orm
+from src.orm.users_orm import get_user_by_id,change_user_password
+from sqlalchemy.orm import selectinload
 from src.dao.users import Users
 from src.dto.users import UserReadDTO,UserCreateDTO, UserRelDTO
 from typing import Optional,Annotated
@@ -11,7 +13,10 @@ router = APIRouter(prefix="/users",tags=["Пользователи"])
 
 @router.get("/v1/")
 async def show(pagination:PaginationDep):
-    users = await Users.find_all(pagination=pagination)
+    users = await Users.find_all(pagination=pagination,
+                                options=[selectinload(Users_orm.projects)
+                                .selectinload(Projects_orm.tasks)
+                                .selectinload(Tasks_orm.comments)])
     return {'users':users}
 
 @router.get("/v1/{user_id}")
@@ -22,7 +27,7 @@ async def show_by_id(user_id:int)->dict[str,UserRelDTO]:
 @router.post("/v1/")
 async def add(user:UserCreateDTODep):
     try:
-        await create_user(user)
+        await Users.create(user)
         return {"status":"Completed", "user":user}
     except Exception as _ex:
         raise HTTPException(status_code=500, detail=f"Не удалось создать пользователя {_ex}")
