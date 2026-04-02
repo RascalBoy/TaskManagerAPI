@@ -3,11 +3,14 @@
 
 #Стек технологий
 Проект будет написан на языке python с подключением базы данных postgresql и использованием следующих библиотек
+  asyncpg
+  passlib
   fastapi
   pydantic
   sqlalchemy
   alembic
-  jwt
+  jose (JWT)
+  
 
 В проекте определены следующие сущности:
 
