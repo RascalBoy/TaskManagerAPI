@@ -3,8 +3,8 @@ from src.dto.projects import ProjectCreateDTO
 from src.dto.tasks import TaskCreateDTO
 from src.dto.comments import CommentsCreateDTO
 from src.dao.users import Users
-from src.orm.projects_orm import create_project
-from src.orm.tasks_orm import create_task
+from src.dao.projects import Projects
+from src.dao.tasks import Tasks
 from src.orm.comments_orm import create_comment
 from src.database import session_factory 
 
@@ -113,13 +113,13 @@ async def insert_test_data():
     _tasks = [TaskCreateDTO(**t) for t in tasks]
     _comments = [CommentsCreateDTO(**c) for c in comments]
     for u in _users:
-        await Users.create(u)
+        await Users.insert(u)
     
     for p in _projects:
-        await create_project(p)
+        await Projects.insert(p)
 
     for t in _tasks:
-        await create_task(t)
+        await Tasks.insert(t)
 
     for c in _comments:
         await create_comment(c)

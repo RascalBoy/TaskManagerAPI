@@ -1,21 +1,22 @@
-from fastapi import APIRouter,HTTPException, Response,status
-from src.orm.users_orm import auth_user
-from src.dto.users import UserReadDTO
+from fastapi import APIRouter,HTTPException, Response
+from src.dao.users import Users
+from src.modules.response_creator import ResponseCreator
 from src.modules.hash_tools import verify_hash
 from src.jwt.token_creator import create_access_token
 
 router = APIRouter(tags=["Аутентификация"])
 
 @router.patch("/v1/auth")
-async def login(response:Response,login:str, password:str):
-    user = await auth_user(login,password)
+async def login(response:Response, user_login:str, user_password:str):
+    user = await Users.find_one_or_none(login=user_login)
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Такого пользователя не существует")
+        raise HTTPException(status_code=404, detail="Такого пользователя не существует")
     
-    if not verify_hash(password, user.password):
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Отказано в доступе")
+    if not verify_hash(user_password, user.password):
+        return HTTPException(status_code=401,detail="Отказано в доступе")
     
     token = create_access_token({"user":user.id})
     response.set_cookie("auth_token",token,httponly=True)
-    return token
+    return ResponseCreator.create_response(object=token,
+                                           message="Аутентификация выполнена успешно")
     

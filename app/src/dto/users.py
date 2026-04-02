@@ -20,5 +20,6 @@ class UserReadDTO(BaseModel):
     second_name: Annotated[str,Field(title="Фамилия пользователя",description="Необходим для отображения в системе")]
 
 class UserRelDTO(UserReadDTO):
+    
     model_config = ConfigDict(from_attributes=True)
     projects: list["ProjectRelDTO"] = []
