@@ -8,8 +8,8 @@ from src.dto.comments import CommentsDTO
 class TaskCreateDTO(BaseModel):
     model_config=ConfigDict(from_attributes=True)
     
-    title: Annotated[str, Field(title="",description="")]
-    description: Annotated[str, Field(title="",description="")]
+    title: Annotated[str|None, Field(title="",description="")] = None
+    description: Annotated[str|None, Field(title="",description="")] = None
     completion_state: Annotated[Complition_state,Field(title="",description="")]
     project_id: Annotated[int,Field(title="",description="")]
 

@@ -25,7 +25,16 @@ async def add(task:TaskCreateDTODep):
         return ResponseCreator.create_response(message="Задача добавлена")
     except Exception as _ex:
         raise HTTPException(status_code=500, detail=f"{_ex}")
-    
+
+@router.put("/v1/tasks")
+async def edit(task:TaskCreateDTO,task_id:int):
+    try:
+        await Tasks.update(task, id=task_id)
+        return ResponseCreator.create_response(message=f"Задача успешно изменена")
+    except Exception as _ex:
+        return ResponseCreator.create_response(500,"Error",message=f"{_ex}")
+
+
 @router.patch("/v1/tasks")
 async def change_status(id:int, state:Complition_state):
     try:
