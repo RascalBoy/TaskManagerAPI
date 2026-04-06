@@ -4,7 +4,7 @@ from src.modules.response_creator import ResponseCreator
 from src.dto.projects import ProjectCreateDTO,ProjectRelDTO
 from src.dto.other import PaginationDep
 from src.dao.projects import Projects
-from src.orm.projects_orm import get_projects, create_project, add_user,remove_user,drop_project
+from src.orm.projects_orm import  add_user,remove_user
 from sqlalchemy.orm import selectinload
 from typing import Annotated
 from fastapi import APIRouter,HTTPException,Depends

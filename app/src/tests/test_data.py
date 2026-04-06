@@ -5,7 +5,7 @@ from src.dto.comments import CommentsCreateDTO
 from src.dao.users import Users
 from src.dao.projects import Projects
 from src.dao.tasks import Tasks
-from src.orm.comments_orm import create_comment
+from src.dao.comments import Comments
 from src.database import session_factory 
 
 users = [{"login":"Test1",
@@ -122,4 +122,4 @@ async def insert_test_data():
         await Tasks.insert(t)
 
     for c in _comments:
-        await create_comment(c)
+        await Comments.insert(c)

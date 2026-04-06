@@ -91,3 +91,33 @@ class BaseDAO():
             res = await session.execute(stmt)
             await session.commit()
             return res.scalar_one_or_none()
+        
+    @classmethod
+    async def update_by_id(cls,model_id,model):
+        async with session_factory() as session:
+            try:
+                data = model.model_dump(exclude_unset=True)
+                stmt = (
+                    update(cls.model)#type:ignore
+                    .filter_by(id = model_id)
+                    .values(**data)
+                )
+                await session.execute(stmt)
+                await session.commit()
+            except Exception as ex:
+                raise HTTPException(status_code=500,detail=f"Изменение не удалось - {ex}")
+            
+    @classmethod
+    async def update(cls,model, **filter_by):
+        async with session_factory() as session:
+            try:
+                data = model.model_dump(exclude_unset=True)
+                stmt = (
+                    update(cls.model)#type:ignore
+                    .filter_by(**filter_by)
+                    .values(**data)
+                )
+                await session.execute(stmt)
+                await session.commit()
+            except Exception as ex:
+                raise HTTPException(status_code=500,detail=f"Изменение не удалось - {ex}")
