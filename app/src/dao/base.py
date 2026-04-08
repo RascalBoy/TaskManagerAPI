@@ -75,7 +75,10 @@ class BaseDAO():
             try:
                 obj = cls.model(**object.model_dump()) # type: ignore
                 session.add(obj)
+                await session.flush()
                 await session.commit()
+                await session.refresh(obj)
+                return obj
             except Exception as ex:
                 raise HTTPException(status_code=500,detail=f"Добавление не удалось - {ex}")
             

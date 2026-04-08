@@ -1,3 +1,5 @@
+import asyncio
+
 from src.dao.users import Users
 from src.models.models_orm import Projects_orm, Tasks_orm
 from src.modules.response_creator import ResponseCreator
@@ -7,17 +9,19 @@ from src.dao.projects import Projects
 from src.orm.projects_orm import  add_user,remove_user
 from sqlalchemy.orm import selectinload
 from typing import Annotated
-from fastapi import APIRouter,HTTPException,Depends
+from src.jwt.token_verifier import verify_token
+from fastapi import APIRouter,HTTPException,Depends, Request
 
 router = APIRouter(tags=["Проекты"])
 
 SProjectCreateDep = Annotated[ProjectCreateDTO,Depends(ProjectCreateDTO)]
 
 @router.get("/v1/projects") #Done
-async def show(pagination:PaginationDep):
+async def show(pagination:PaginationDep, request:Request):
+    user = await verify_token(request.cookies.get("auth_token"))
     result = await Projects.find_all(pagination,options=[
         selectinload(Projects_orm.tasks)
-        .selectinload(Tasks_orm.comments)])
+        .selectinload(Tasks_orm.comments)], owner_id=user.id)
 
     if not result:
         raise HTTPException(status_code=404,detail="Проектов в бд нет")

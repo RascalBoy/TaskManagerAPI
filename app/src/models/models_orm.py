@@ -57,7 +57,7 @@ class Tasks_orm(Base):
 class Comments_orm(Base):
     __tablename__ = 'сomments'
     id:Mapped[intpk]
-    title:Mapped[str_20]
+    title:Mapped[str_50]
     description:Mapped[str_200]
     user_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("users.id",ondelete="SET NULL"))
     task_id:Mapped[Optional[int|None]] = mapped_column(ForeignKey("tasks.id",ondelete="SET NULL"))

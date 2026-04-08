@@ -1,3 +1,6 @@
+import asyncio
+
+from src.modules.hash_tools import get_hash
 from src.dto.users import UserCreateDTO
 from src.dto.projects import ProjectCreateDTO
 from src.dto.tasks import TaskCreateDTO
@@ -79,32 +82,8 @@ comments=[
         "title":"Нужно переделать бд",
         "description":"Вроде все неплохо но как проектировщик бд я все еще слабоват",
         "user_id":2,
-        "task_id":3
-    },
-    {
-        "title":"Главное не забыть перец",
-        "description":"Для вкусных пельменей нужно преобрести и использовать перец",
-        "user_id":1,
-        "task_id":1
-    },
-    {
-        "title":"Нужно переделать бд",
-        "description":"Вроде все неплохо но как проектировщик бд я все еще слабоват",
-        "user_id":2,
-        "task_id":3
-    },
-    {
-        "title":"Главное не забыть перец",
-        "description":"Для вкусных пельменей нужно преобрести и использовать перец",
-        "user_id":1,
-        "task_id":1
-    },
-    {
-        "title":"Нужно переделать бд",
-        "description":"Вроде все неплохо но как проектировщик бд я все еще слабоват",
-        "user_id":2,
-        "task_id":3
-    },
+        "task_id":2
+    }
 ]
 
 async def insert_test_data():
@@ -113,13 +92,12 @@ async def insert_test_data():
     _tasks = [TaskCreateDTO(**t) for t in tasks]
     _comments = [CommentsCreateDTO(**c) for c in comments]
     for u in _users:
+        hashed_pass = get_hash(u.password)
+        u.password = hashed_pass
         await Users.insert(u)
-    
     for p in _projects:
         await Projects.insert(p)
-
     for t in _tasks:
         await Tasks.insert(t)
-
     for c in _comments:
         await Comments.insert(c)

@@ -6,7 +6,7 @@ from src.jwt.token_creator import create_access_token
 
 router = APIRouter(tags=["Аутентификация"])
 
-@router.patch("/v1/auth")
+@router.patch("/v1/login")
 async def login(response:Response, user_login:str, user_password:str):
     user = await Users.find_one_or_none(login=user_login)
     if not user:
