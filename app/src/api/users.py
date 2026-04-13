@@ -4,10 +4,10 @@ from sqlalchemy.orm import selectinload
 from src.modules.hash_tools import get_hash
 from src.dao.users import Users
 from src.dto.users import UserCreateDTO, UserRelDTO
-from typing import Annotated
 from src.dto.other import PaginationDep
-from modules.response_creator import ResponseCreator
+from src.modules.response_creator import ResponseCreator
 
+from typing import Annotated
 UserCreateDTODep = Annotated[UserCreateDTO,Depends(UserCreateDTO)]
 
 router = APIRouter(prefix="/users",tags=["Пользователи"])
@@ -19,7 +19,7 @@ async def show(pagination:PaginationDep):
                                 .selectinload(Projects_orm.tasks)
                                 .selectinload(Tasks_orm.comments)])
     if not users:
-        return ResponseCreator.create_response(200, "Completed")
+        raise HTTPException(status_code=404, detail="Пользователей нет")
     _users = [UserRelDTO.model_validate(row,from_attributes=True) for row in users]
     return ResponseCreator.create_response(_users)#type:ignore
 
@@ -29,7 +29,7 @@ async def show_by_id(user_id:int):
                                                                 .selectinload(Projects_orm.tasks)
                                                                 .selectinload(Tasks_orm.comments)])
     if not user:
-        return ResponseCreator.create_response(status_code=404, status="Not Found", message="Пользователя не существует")
+        raise HTTPException(status_code=404, detail="Пользователя не существует")
     
     return ResponseCreator.create_response(object=UserRelDTO.model_validate(user,from_attributes=True))
 
@@ -42,14 +42,11 @@ async def add(user:UserCreateDTODep):
     
 @router.delete("/v1/")
 async def delete(id:int):
-    if id > 0:
-        try:
-            await Users.delete_by_id(model_id=id)
-            return ResponseCreator.create_response(message="Пользователь успешно удален")
-        except Exception as _ex:
-            raise HTTPException(status_code=500, detail=f"Удаление не удалось {_ex}")
-    else:
-        raise HTTPException(status_code=404, detail="Пользователя для удаления не существует")
+    try:
+        await Users.delete_by_id(model_id=id)
+        return ResponseCreator.create_response(message="Пользователь успешно удален")
+    except Exception as _ex:
+        raise HTTPException(status_code=500, detail=f"Удаление не удалось {_ex}")
 
 @router.patch("/v1/")
 async def change_password(user_id:int, new_pass:str):

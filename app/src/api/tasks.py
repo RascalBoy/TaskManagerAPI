@@ -15,7 +15,7 @@ TaskCreateDTODep = Annotated[TaskCreateDTO,Depends(TaskCreateDTO)]
 async def show(pagination:PaginationDep):
     result = await Tasks.find_all(pagination, options=[selectinload(Tasks.model.comments)])
     if not result:
-        return ResponseCreator.create_response(status_code=404,message="Задач нет")
+        raise HTTPException(status_code=404, detail=f"Задач нет")
     return ResponseCreator.create_response(object=[TaskRelDTO.model_validate(row,) for row in result])
 
 @router.post("/v1/tasks")
@@ -32,7 +32,7 @@ async def edit(task:TaskCreateDTO,task_id:int):
         await Tasks.update(task, id=task_id)
         return ResponseCreator.create_response(message=f"Задача успешно изменена")
     except Exception as _ex:
-        return ResponseCreator.create_response(500,"Error",message=f"{_ex}")
+        raise HTTPException(status_code=500, detail=f"{_ex}")
 
 
 @router.patch("/v1/tasks")
