@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException,Depends
+from fastapi import APIRouter, HTTPException,Depends, Request
+from jwt.token_verifier import verify_token
 from src.models.models_orm import Projects_orm, Tasks_orm, Users_orm
 from sqlalchemy.orm import selectinload
 from src.modules.hash_tools import get_hash,verify_hash
@@ -49,29 +50,33 @@ async def delete(id:int):
         raise HTTPException(status_code=500, detail=f"Удаление не удалось {_ex}")
 
 @router.put("/v1/")
-async def change_user_data(new_data:UserCreateDTO, user_id:int):
+async def change_user_data(new_data:UserCreateDTO, user_id:int, request:Request):
     try:
-        user_data = await Users.find_one_or_none_by_id(user_id)
+        user_data = await verify_token(request.cookies.get("auth_token"))
         if not user_data:
             raise HTTPException(status_code=404, detail="Пользователя не существует")
+        if user_data.id != user_id:
+            raise HTTPException(status_code=500, detail="id пользователя не совпадает")
         user = dict(UserCreateDTO.model_validate(user_data, from_attributes=True))
+        actions = set()
         is_data_new = False
         for k,v in new_data:
             if k == "password":
                 if verify_hash(v,user[k]):
                     continue
-                user[k] = v
+                user[k] = get_hash(v)
                 is_data_new = True
             else:
                 if user.get(k) == v:
                     continue
                 user[k] = v
+                actions.add(k)
                 is_data_new = True
         if is_data_new:
             try:
                 new_user = UserCreateDTO.model_validate(user)
                 await Users.update_by_id(user_id, new_user)
-                return ResponseCreator.create_response(object=new_data, message="Данные пользователя изменены")  
+                return ResponseCreator.create_response(object=new_user, message=f"Данные пользователя изменены {actions} были изменены")  
             except Exception as ex:
                 raise HTTPException(status_code=500, detail=f"{ex}")
         return ResponseCreator.create_response(message="Данные такие же")   
