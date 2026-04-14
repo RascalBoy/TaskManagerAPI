@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException,Depends
 from src.models.models_orm import Projects_orm, Tasks_orm, Users_orm
 from sqlalchemy.orm import selectinload
-from src.modules.hash_tools import get_hash
+from src.modules.hash_tools import get_hash,verify_hash
 from src.dao.users import Users
 from src.dto.users import UserCreateDTO, UserRelDTO
 from src.dto.other import PaginationDep
@@ -47,6 +47,36 @@ async def delete(id:int):
         return ResponseCreator.create_response(message="Пользователь успешно удален")
     except Exception as _ex:
         raise HTTPException(status_code=500, detail=f"Удаление не удалось {_ex}")
+
+@router.put("/v1/")
+async def change_user_data(new_data:UserCreateDTO, user_id:int):
+    try:
+        user_data = await Users.find_one_or_none_by_id(user_id)
+        if not user_data:
+            raise HTTPException(status_code=404, detail="Пользователя не существует")
+        user = dict(UserCreateDTO.model_validate(user_data, from_attributes=True))
+        is_data_new = False
+        for k,v in new_data:
+            if k == "password":
+                if verify_hash(v,user[k]):
+                    continue
+                user[k] = v
+                is_data_new = True
+            else:
+                if user.get(k) == v:
+                    continue
+                user[k] = v
+                is_data_new = True
+        if is_data_new:
+            try:
+                new_user = UserCreateDTO.model_validate(user)
+                await Users.update_by_id(user_id, new_user)
+                return ResponseCreator.create_response(object=new_data, message="Данные пользователя изменены")  
+            except Exception as ex:
+                raise HTTPException(status_code=500, detail=f"{ex}")
+        return ResponseCreator.create_response(message="Данные такие же")   
+    except Exception as ex:
+        raise HTTPException(status_code=500, detail=f"{ex}")
 
 @router.patch("/v1/")
 async def change_password(user_id:int, new_pass:str):
