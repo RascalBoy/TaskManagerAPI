@@ -50,7 +50,7 @@ async def remove(project_id:int,request:Request):
     try:
         user = await verify_token(request.cookies.get("auth_token"))
         project = await Projects.find_one_or_none_by_id(project_id)
-        if project.owner_id != user.id:
+        if project.owner_id != user.id: #type:ignore 
             raise HTTPException(status_code=401, detail="У вас нет прав на удаление проекта")
         res = await Projects.delete_by_id(project_id)
         return ResponseCreator.create_response(message="Проект успешно удален")

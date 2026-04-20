@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+    {% for project in projects.object %}
+        <div>
+            <h1>{{project.title}}</h1>
+            {% for task in project.tasks %}
+            <div>
+                <h2>{{task.title}}</h2>
+                <h3>{{task.description}}</h3>
+                <h4>{{task.completion_state}}</h4>
+            </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+</body>
+</html>
